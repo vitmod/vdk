@@ -2,8 +2,8 @@ package ts
 
 import (
 	"time"
-	"github.com/nareix/joy4/av"
-	"github.com/nareix/joy4/format/ts/tsio"
+	"github.com/vitmod/vdk/av"
+	"github.com/vitmod/vdk/format/ts/tsio"
 )
 
 type Stream struct {

@@ -2,8 +2,8 @@ package ts
 
 import (
 	"io"
-	"github.com/nareix/joy4/av"
-	"github.com/nareix/joy4/av/avutil"
+	"github.com/vitmod/vdk/av"
+	"github.com/vitmod/vdk/av/avutil"
 )
 
 func Handler(h *avutil.RegisterHandler) {

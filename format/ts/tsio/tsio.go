@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 	"fmt"
-	"github.com/nareix/joy4/utils/bits/pio"
+	"github.com/vitmod/vdk/utils/bits/pio"
 )
 
 const (

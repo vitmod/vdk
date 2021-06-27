@@ -5,7 +5,7 @@ import (
 	"strings"
 	"fmt"
 	"bytes"
-	"github.com/nareix/joy4/av"
+	"github.com/vitmod/vdk/av"
 	"net/url"
 	"os"
 	"path"

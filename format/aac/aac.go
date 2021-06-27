@@ -2,9 +2,9 @@
 package aac
 
 import (
-	"github.com/nareix/joy4/av/avutil"
-	"github.com/nareix/joy4/av"
-	"github.com/nareix/joy4/codec/aacparser"
+	"github.com/vitmod/vdk/av/avutil"
+	"github.com/vitmod/vdk/av"
+	"github.com/vitmod/vdk/codec/aacparser"
 	"time"
 	"fmt"
 	"io"

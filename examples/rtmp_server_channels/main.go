@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/nareix/joy4/av"
-	"github.com/nareix/joy4/av/avutil"
-	"github.com/nareix/joy4/av/pktque"
-	"github.com/nareix/joy4/av/pubsub"
-	"github.com/nareix/joy4/format"
-	"github.com/nareix/joy4/format/rtmp"
+	"github.com/vitmod/vdk/av"
+	"github.com/vitmod/vdk/av/avutil"
+	"github.com/vitmod/vdk/av/pktque"
+	"github.com/vitmod/vdk/av/pubsub"
+	"github.com/vitmod/vdk/format"
+	"github.com/vitmod/vdk/format/rtmp"
 	"sync"
 	"time"
 )

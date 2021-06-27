@@ -1,13 +1,13 @@
 package format
 
 import (
-	"github.com/nareix/joy4/format/mp4"
-	"github.com/nareix/joy4/format/ts"
-	"github.com/nareix/joy4/format/rtmp"
-	"github.com/nareix/joy4/format/rtsp"
-	"github.com/nareix/joy4/format/flv"
-	"github.com/nareix/joy4/format/aac"
-	"github.com/nareix/joy4/av/avutil"
+	"github.com/vitmod/vdk/format/mp4"
+	"github.com/vitmod/vdk/format/ts"
+	"github.com/vitmod/vdk/format/rtmp"
+	"github.com/vitmod/vdk/format/rtsp"
+	"github.com/vitmod/vdk/format/flv"
+	"github.com/vitmod/vdk/format/aac"
+	"github.com/vitmod/vdk/av/avutil"
 )
 
 func RegisterAll() {
