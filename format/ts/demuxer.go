@@ -105,18 +105,27 @@ func (self *Demuxer) initPMT(payload []byte) (err error) {
 		return
 	}
 
+	var idx = -1
 	self.streams = []*Stream{}
-	for i, info := range self.pmt.ElementaryStreamInfos {
+	//for i, info := range self.pmt.ElementaryStreamInfos {
+	for _, info := range self.pmt.ElementaryStreamInfos {
 		stream := &Stream{}
-		stream.idx = i
+		//stream.idx = i
 		stream.demuxer = self
 		stream.pid = info.ElementaryPID
 		stream.streamType = info.StreamType
 		switch info.StreamType {
 		case tsio.ElementaryStreamTypeH264:
 			self.streams = append(self.streams, stream)
+			idx++
+			fmt.Printf("Demux H264 PID: %v\n", stream.pid)
 		case tsio.ElementaryStreamTypeAdtsAAC:
 			self.streams = append(self.streams, stream)
+			idx++
+			fmt.Printf("Demux AAC PID: %v\n", stream.pid)
+		}
+		if idx >= 0 {
+			stream.idx = idx
 		}
 	}
 	return
@@ -163,6 +172,7 @@ func (self *Demuxer) readTSPacket() (err error) {
 	} else if self.pmt == nil {
 		for _, entry := range self.pat.Entries {
 			if entry.ProgramMapPID == pid {
+				fmt.Printf("Demux PMT PID: %v\n", pid)
 				if err = self.initPMT(payload); err != nil {
 					return
 				}

@@ -111,11 +111,13 @@ func (self *Muxer) WritePATPMT() (err error) {
 				StreamType:    tsio.ElementaryStreamTypeAdtsAAC,
 				ElementaryPID: stream.pid,
 			})
+			fmt.Printf("Mux AAC PID: %v\n", stream.pid)
 		case av.H264:
 			elemStreams = append(elemStreams, tsio.ElementaryStreamInfo{
 				StreamType:    tsio.ElementaryStreamTypeH264,
 				ElementaryPID: stream.pid,
 			})
+			fmt.Printf("Mux H264 PID: %v\n", stream.pid)
 		}
 	}
 
