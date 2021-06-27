@@ -1,7 +1,8 @@
 package ffmpeg
 
 /*
-#cgo LDFLAGS: -lavformat -lavutil -lavcodec -lavresample -lswscale
+#cgo pkg-config: libavformat libavutil libavcodec libavresample libswscale
+#cgo CFLAGS: -Wno-deprecated-declarations
 #include "ffmpeg.h"
 void ffinit() {
 	av_register_all();
