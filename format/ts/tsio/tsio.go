@@ -584,7 +584,8 @@ func ParseTSHeader(tshdr []byte) (pid uint16, start bool, iskeyframe bool, hdrle
 	hdrlen += 4
 	if tshdr[3]&0x20 != 0 {
 		hdrlen += int(tshdr[4])+1
-		iskeyframe = tshdr[5]&0x40 != 0
+		//iskeyframe = tshdr[5]&0x40 != 0
+		iskeyframe = tshdr[5] != 0 //vit fix
 	}
 	return
 }
