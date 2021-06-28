@@ -107,6 +107,7 @@ func (self *Demuxer) initPMT(payload []byte) (err error) {
 	}
 
 	var idx = -1
+	var firstAudio = true
 	self.streams = []*Stream{}
 	//for i, info := range self.pmt.ElementaryStreamInfos {
 	for _, info := range self.pmt.ElementaryStreamInfos {
@@ -119,15 +120,23 @@ func (self *Demuxer) initPMT(payload []byte) (err error) {
 		case tsio.ElementaryStreamTypeH264:
 			self.streams = append(self.streams, stream)
 			idx++
-			fmt.Printf("Demux H264 PID: %v\n", stream.pid)
+			fmt.Printf("Demux video H264 PID: %v\n", stream.pid)
 		case tsio.ElementaryStreamTypeAdtsAAC:
-			self.streams = append(self.streams, stream)
-			idx++
-			fmt.Printf("Demux AAC PID: %v\n", stream.pid)
-		case tsio.ElementaryStreamTypeMP2Audio:
-			self.streams = append(self.streams, stream)
-			idx++
-			fmt.Printf("Demux MP2 PID: %v\n", stream.pid)
+			if firstAudio {
+				self.streams = append(self.streams, stream)
+				idx++
+				fmt.Printf("Demux audio AAC PID: %v\n", stream.pid)
+				firstAudio = false
+			}
+		case tsio.ElementaryStreamTypeMP1Audio, tsio.ElementaryStreamTypeMP2Audio:
+			if firstAudio {
+				self.streams = append(self.streams, stream)
+				idx++
+				fmt.Printf("Demux audio MP2 PID: %v\n", stream.pid)
+				firstAudio = false
+			}
+		default:
+			fmt.Printf("Demux other PID: %v, StreamType: %v\n", stream.pid, info.StreamType)
 		}
 		if idx >= 0 {
 			stream.idx = idx
@@ -230,7 +239,7 @@ func (self *Stream) payloadEnd() (n int, err error) {
 	self.data = nil
 	
 	switch self.streamType {
-	case tsio.ElementaryStreamTypeMP2Audio:
+	case tsio.ElementaryStreamTypeMP1Audio, tsio.ElementaryStreamTypeMP2Audio:
 		for len(payload) > 0 {
 			delta := time.Duration(0)
 			if (!mp2parser.IsValidFrameHeader(payload)) {

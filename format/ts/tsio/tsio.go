@@ -35,6 +35,7 @@ var ErrParsePAT = fmt.Errorf("invalid PAT")
 const (
 	ElementaryStreamTypeH264    = 0x1B
 	ElementaryStreamTypeAdtsAAC = 0x0F
+	ElementaryStreamTypeMP1Audio = 0x03
 	ElementaryStreamTypeMP2Audio = 0x04
 )
 
