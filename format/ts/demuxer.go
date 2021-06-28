@@ -9,6 +9,7 @@ import (
 	"github.com/vitmod/vdk/format/ts/tsio"
 	"github.com/vitmod/vdk/codec/aacparser"
 	"github.com/vitmod/vdk/codec/h264parser"
+	"github.com/vitmod/vdk/codec/mp2parser"
 	"io"
 )
 
@@ -123,6 +124,10 @@ func (self *Demuxer) initPMT(payload []byte) (err error) {
 			self.streams = append(self.streams, stream)
 			idx++
 			fmt.Printf("Demux AAC PID: %v\n", stream.pid)
+		case tsio.ElementaryStreamTypeMP2Audio:
+			self.streams = append(self.streams, stream)
+			idx++
+			fmt.Printf("Demux MP2 PID: %v\n", stream.pid)
 		}
 		if idx >= 0 {
 			stream.idx = idx
@@ -223,8 +228,28 @@ func (self *Stream) payloadEnd() (n int, err error) {
 		return
 	}
 	self.data = nil
-
+	
 	switch self.streamType {
+	case tsio.ElementaryStreamTypeMP2Audio:
+		for len(payload) > 0 {
+			delta := time.Duration(0)
+			if (!mp2parser.IsValidFrameHeader(payload)) {
+				return
+			}
+			
+			spf, framelen, samplerate := mp2parser.ParseMP2(payload)
+			samples := spf * n
+			
+			if self.CodecData == nil {
+				self.CodecData = mp2parser.NewCodecDataMP2Audio()
+			}
+			
+			self.addPacket(payload[:framelen], delta)
+			n++
+			delta += time.Duration(samples) * time.Second / time.Duration(samplerate)
+			payload = payload[framelen:]
+		}
+
 	case tsio.ElementaryStreamTypeAdtsAAC:
 		var config aacparser.MPEG4AudioConfig
 
@@ -234,14 +259,17 @@ func (self *Stream) payloadEnd() (n int, err error) {
 			if config, hdrlen, framelen, samples, err = aacparser.ParseADTSHeader(payload); err != nil {
 				return
 			}
+			
 			if self.CodecData == nil {
 				if self.CodecData, err = aacparser.NewCodecDataFromMPEG4AudioConfig(config); err != nil {
 					return
 				}
 			}
+
 			self.addPacket(payload[hdrlen:framelen], delta)
 			n++
 			delta += time.Duration(samples) * time.Second / time.Duration(config.SampleRate)
+			//fmt.Printf("delta: %v, samples: %v, samples2: %v\n", delta, samples, time.Duration((1000/config.SampleRate) * 1024) * time.Millisecond)
 			payload = payload[framelen:]
 		}
 

@@ -35,6 +35,7 @@ var ErrParsePAT = fmt.Errorf("invalid PAT")
 const (
 	ElementaryStreamTypeH264    = 0x1B
 	ElementaryStreamTypeAdtsAAC = 0x0F
+	ElementaryStreamTypeMP2Audio = 0x04
 )
 
 type PATEntry struct {
@@ -533,7 +534,8 @@ func (self *TSWriter) WritePackets(w io.Writer, datav [][]byte, pcr time.Duratio
 			if pcr != 0 {
 				hdrlen += 6
 				self.tshdr[5] = 0x10|self.tshdr[5] // PCR flag (Discontinuity indicator 0x80)
-				pio.PutU48BE(self.tshdr[6:12], TimeToPCR(pcr))
+				//pio.PutU48BE(self.tshdr[6:12], TimeToPCR(pcr))
+				pio.PutU48BE(self.tshdr[6:12], 0)//vit disable PCR, fix later
 			}
 			if sync {
 				self.tshdr[5] = 0x40|self.tshdr[5] // Random Access indicator

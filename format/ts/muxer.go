@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var CodecTypes = []av.CodecType{av.H264, av.AAC}
+var CodecTypes = []av.CodecType{av.H264, av.AAC, av.MPEG2AUDIO}
 
 type Muxer struct {
 	w                        io.Writer
@@ -106,6 +106,12 @@ func (self *Muxer) WritePATPMT() (err error) {
 	var elemStreams []tsio.ElementaryStreamInfo
 	for _, stream := range self.streams {
 		switch stream.Type() {
+		case av.MPEG2AUDIO:
+			elemStreams = append(elemStreams, tsio.ElementaryStreamInfo{
+				StreamType:    tsio.ElementaryStreamTypeMP2Audio,
+				ElementaryPID: stream.pid,
+			})
+			fmt.Printf("Mux MP2 PID: %v\n", stream.pid)
 		case av.AAC:
 			elemStreams = append(elemStreams, tsio.ElementaryStreamInfo{
 				StreamType:    tsio.ElementaryStreamTypeAdtsAAC,
@@ -159,6 +165,9 @@ func (self *Muxer) WritePacket(pkt av.Packet) (err error) {
 	pkt.Time += time.Second
 
 	switch stream.Type() {
+	case av.MPEG2AUDIO:
+		return
+
 	case av.AAC:
 		codec := stream.CodecData.(aacparser.CodecData)
 

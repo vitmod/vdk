@@ -676,6 +676,9 @@ func NewAudioDecoder(codec av.AudioCodecData) (dec *AudioDecoder, err error) {
 
 	case av.PCM_ALAW:
 		id = C.AV_CODEC_ID_PCM_ALAW
+	
+	case av.MPEG2AUDIO:
+		id = C.AV_CODEC_ID_MP2
 
 	default:
 		if ffcodec, ok := codec.(audioCodecData); ok {
