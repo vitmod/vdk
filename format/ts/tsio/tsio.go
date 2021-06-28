@@ -377,7 +377,8 @@ func FillPSI(h []byte, tableid uint8, tableext uint16, datalen int) (n int) {
 
 func TimeToPCR(tm time.Duration) (pcr uint64) {
 	// base(33)+resverd(6)+ext(9)
-	ts := uint64(tm*PCR_HZ/time.Second)
+	//ts := uint64(tm*PCR_HZ/time.Second)
+	ts := uint64((tm/time.Second)*PCR_HZ)
 	base := ts / 300
 	ext := ts % 300
 	pcr = base<<15 | 0x3f<<9 | ext
@@ -534,8 +535,7 @@ func (self *TSWriter) WritePackets(w io.Writer, datav [][]byte, pcr time.Duratio
 			if pcr != 0 {
 				hdrlen += 6
 				self.tshdr[5] = 0x10|self.tshdr[5] // PCR flag (Discontinuity indicator 0x80)
-				//pio.PutU48BE(self.tshdr[6:12], TimeToPCR(pcr))
-				pio.PutU48BE(self.tshdr[6:12], 0)//vit disable PCR, fix later
+				pio.PutU48BE(self.tshdr[6:12], TimeToPCR(pcr))
 			}
 			if sync {
 				self.tshdr[5] = 0x40|self.tshdr[5] // Random Access indicator
