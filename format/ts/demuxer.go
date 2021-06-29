@@ -10,6 +10,7 @@ import (
 	"github.com/vitmod/vdk/codec/aacparser"
 	"github.com/vitmod/vdk/codec/h264parser"
 	"github.com/vitmod/vdk/codec/mp2parser"
+	"github.com/vitmod/vdk/codec/ac3parser"
 	"io"
 )
 
@@ -135,6 +136,13 @@ func (self *Demuxer) initPMT(payload []byte) (err error) {
 				fmt.Printf("Demux audio MP2 PID: %v\n", stream.pid)
 				firstAudio = false
 			}
+		case tsio.ElementaryStreamTypeAC3:
+			if firstAudio {
+				self.streams = append(self.streams, stream)
+				idx++
+				fmt.Printf("Demux audio AC3 PID: %v\n", stream.pid)
+				firstAudio = false
+			}
 		default:
 			fmt.Printf("Demux other PID: %v, StreamType: %v\n", stream.pid, info.StreamType)
 		}
@@ -251,6 +259,28 @@ func (self *Stream) payloadEnd() (n int, err error) {
 			
 			if self.CodecData == nil {
 				self.CodecData = mp2parser.NewCodecDataMP2Audio()
+			}
+			
+			self.addPacket(payload[:framelen], delta)
+			n++
+			delta += time.Duration(samples) * time.Second / time.Duration(samplerate)
+			payload = payload[framelen:]
+		}
+	
+	case tsio.ElementaryStreamTypeAC3:
+		for len(payload) > 0 {
+			delta := time.Duration(0)
+			if (!ac3parser.IsValidAC3FrameHeader(payload)) {
+				return
+			}
+			
+			spf, framelen, samplerate := ac3parser.ParseAC3(payload)
+			//fmt.Printf("AC3: spf: %v, framelen: %v, samplerate: %v\n", spf, framelen, samplerate)
+			
+			samples := spf * n
+			
+			if self.CodecData == nil {
+				self.CodecData = ac3parser.NewCodecDataAC3()
 			}
 			
 			self.addPacket(payload[:framelen], delta)

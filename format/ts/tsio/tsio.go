@@ -37,6 +37,7 @@ const (
 	ElementaryStreamTypeAdtsAAC = 0x0F
 	ElementaryStreamTypeMP1Audio = 0x03
 	ElementaryStreamTypeMP2Audio = 0x04
+	ElementaryStreamTypeAC3 = 0x06
 )
 
 type PATEntry struct {

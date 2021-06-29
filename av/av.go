@@ -123,6 +123,7 @@ var (
 	SPEEX = MakeAudioCodecType(avCodecTypeMagic + 4)
 	NELLYMOSER = MakeAudioCodecType(avCodecTypeMagic + 5)
 	MPEG2AUDIO = MakeAudioCodecType(avCodecTypeMagic + 6)
+	AC3 = MakeAudioCodecType(avCodecTypeMagic + 7)
 )
 
 const codecTypeAudioBit = 0x1
@@ -144,6 +145,8 @@ func (self CodecType) String() string {
 		return "NELLYMOSER"
 	case MPEG2AUDIO:
 		return "MPEG2AUDIO"
+	case AC3:
+		return "AC3"
 	}
 	return ""
 }

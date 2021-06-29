@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var CodecTypes = []av.CodecType{av.H264, av.AAC, av.MPEG2AUDIO}
+var CodecTypes = []av.CodecType{av.H264, av.AAC, av.MPEG2AUDIO, av.AC3}
 
 type Muxer struct {
 	w                        io.Writer
